@@ -2,17 +2,25 @@ package ssr
 
 import (
 	"net/http"
-	"peterszarvas94/blog/pkg/custom"
-	"peterszarvas94/blog/pkg/fileutils"
-	"peterszarvas94/blog/pkg/pages"
 
 	"github.com/a-h/templ"
+	"github.com/peterszarvas94/lt2/custom"
+	"github.com/peterszarvas94/lt2/fileutils"
+	"github.com/peterszarvas94/lt2/pages"
 )
 
 type indexHandler struct{}
 
 func (h *indexHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	if customHomePage, exists := (*custom.Routes)["/"]; exists {
+	customRoutes := custom.GetRoutes()
+
+	err, pages := pages.GetPages()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	if customHomePage, exists := customRoutes["/"]; exists {
 		handler := templ.Handler(customHomePage)
 		handler.ServeHTTP(w, r)
 	} else {

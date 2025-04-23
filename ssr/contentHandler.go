@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"net/http"
 	"path"
-	"peterszarvas94/blog/pkg/custom"
-	"peterszarvas94/blog/pkg/fileutils"
-	"peterszarvas94/blog/pkg/pages"
 
 	"github.com/a-h/templ"
+	"github.com/peterszarvas94/lt2/custom"
+	"github.com/peterszarvas94/lt2/fileutils"
+	"github.com/peterszarvas94/lt2/pages"
 )
 
 type contentHandler struct{}
@@ -23,7 +23,9 @@ func (h *contentHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	url := r.URL.Path
 
-	for route, component := range *custom.Routes {
+	customRoutes := custom.GetRoutes()
+
+	for route, component := range customRoutes {
 		if url == route || url == fmt.Sprintf("%s/", route) {
 			templ.Handler(component).ServeHTTP(w, r)
 			return
@@ -33,6 +35,12 @@ func (h *contentHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	pathToFile := path.Join("content", url)
 
 	pathToFileWithExtension := fmt.Sprintf("%s.md", pathToFile)
+
+	err, pages := pages.GetPages()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 
 	file, err := fileutils.FindFileFromFilePath(pathToFileWithExtension)
 	if err != nil {

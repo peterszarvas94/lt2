@@ -1,10 +1,11 @@
-package 
+package ssr
 
 import (
 	"fmt"
 	"net/http"
 	"path"
-	_ "peterszarvas94/blog/pkg/init"
+
+	_ "github.com/peterszarvas94/lt2/check"
 )
 
 func main() {

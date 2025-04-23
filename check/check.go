@@ -13,7 +13,9 @@ import (
 var protectedRoutes = []string{"/404", "/static", "/tag", "/category"}
 
 func CheckContentDir() error {
-	for route := range *custom.Routes {
+	customRoutes := custom.GetRoutes()
+
+	for route := range customRoutes {
 		if slices.Contains(protectedRoutes, route) {
 			return &errors.ExistingProtectedRouteError{
 				Route: route,
@@ -24,7 +26,7 @@ func CheckContentDir() error {
 	files := fileutils.GetFiles()
 
 	for _, file := range files {
-		for route := range *custom.Routes {
+		for route := range customRoutes {
 			if file.Fileroute == route {
 				return &errors.ProtectedRouteError{
 					Filename: file.Path,

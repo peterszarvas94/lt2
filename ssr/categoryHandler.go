@@ -2,10 +2,10 @@ package ssr
 
 import (
 	"net/http"
-	"peterszarvas94/blog/pkg/fileutils"
-	"peterszarvas94/blog/pkg/pages"
 
 	"github.com/a-h/templ"
+	"github.com/peterszarvas94/lt2/fileutils"
+	"github.com/peterszarvas94/lt2/pages"
 )
 
 type categoryHandler struct{}
@@ -15,6 +15,12 @@ func (h *categoryHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	categories := fileutils.GetCategories()
 	files := categories[category]
+
+	err, pages := pages.GetPages()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 
 	handler := templ.Handler(pages.NotFound())
 
