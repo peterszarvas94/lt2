@@ -3,19 +3,27 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/peterszarvas94/lt2/utils"
 	"github.com/spf13/cobra"
 )
 
 var initCmd = &cobra.Command{
-	Use:   "init",
-	Short: "Initialize a new project",
+	Use:   "init [folder?]",
+	Short: "Initialize a new project at the given folder (default is pwd)",
+	Args:  cobra.RangeArgs(0, 1),
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("TODO: init called, do stuff")
-		// go mod init?
-		// go install stuff
-		// create "content" with example stuff
-		// create "main.go" with some custom routes
-		// gen + static / ssr in main.go file
+		var targetDir string
+		if len(args) > 0 {
+			targetDir = args[0]
+		}
+
+		if targetDir == "" || targetDir == "." {
+			targetDir = "./"
+		}
+		err := utils.UnzipFromEmbed(embedZip, targetDir)
+		if err != nil {
+			fmt.Println(err.Error())
+		}
 	},
 }
 

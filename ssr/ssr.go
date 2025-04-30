@@ -32,9 +32,9 @@ func RunServer() error {
 	contentHandler := &contentHandler{}
 	http.Handle("/{segments...}", contentHandler)
 
-	fmt.Println("Server is starting on http://localhost:8080")
+	fmt.Println("Server is starting on http://localhost:1111")
 
-	err := http.ListenAndServe("localhost:8080", nil)
+	err := http.ListenAndServe("localhost:1111", nil)
 	if err != nil {
 		return err
 	}
